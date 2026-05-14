@@ -10,6 +10,17 @@ class AddExpense extends StatefulWidget {
 }
 
 class _AddExpenseState extends State<AddExpense> {
+  final _titleController = TextEditingController();
+  final _amountController = TextEditingController();
+
+  void handleCancel() {
+    Navigator.pop(context);
+  }
+
+  void _handleSave() {
+    print(_titleController.text);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -29,6 +40,29 @@ class _AddExpenseState extends State<AddExpense> {
             TextField(
               decoration: const InputDecoration(label: Text("Title")),
               keyboardType: TextInputType.text,
+              controller: _titleController,
+            ),
+            TextField(
+              controller: _amountController,
+              decoration: InputDecoration(
+                label: Text('Amount'),
+              ),
+              keyboardType: TextInputType.numberWithOptions(decimal: false),
+            ),
+            Row(
+              children: [
+                ElevatedButton(
+                  onPressed: handleCancel,
+                  child: Text('Cancel'),
+                ),
+                SizedBox(
+                  width: 8,
+                ),
+                ElevatedButton(
+                  onPressed: _handleSave,
+                  child: Text("Save"),
+                ),
+              ],
             ),
           ],
         ),

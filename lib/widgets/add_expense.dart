@@ -1,3 +1,4 @@
+import 'package:expense_tracker/models/expense.dart';
 import 'package:flutter/material.dart';
 
 class AddExpense extends StatefulWidget {
@@ -12,6 +13,7 @@ class AddExpense extends StatefulWidget {
 class _AddExpenseState extends State<AddExpense> {
   final _titleController = TextEditingController();
   final _amountController = TextEditingController();
+  String? _selectedDate;
 
   void handleCancel() {
     Navigator.pop(context);
@@ -19,6 +21,33 @@ class _AddExpenseState extends State<AddExpense> {
 
   void _handleSave() {
     print(_titleController.text);
+    print(_amountController.text);
+  }
+
+  @override
+  void dispose() {
+    _titleController.dispose();
+    _amountController.dispose();
+    super.dispose();
+  }
+
+  Future<void> showDatePickerOption() async {
+    DateTime firstDate = DateTime.now().subtract(Duration(days: 365));
+    DateTime lastDate = DateTime.now().add(Duration(days: 365));
+
+    DateTime? chosenDateTime = await showDatePicker(
+      context: context,
+      firstDate: firstDate,
+      lastDate: lastDate,
+    );
+
+    if (chosenDateTime == null) {
+      return;
+    }
+
+    setState(() {
+      _selectedDate = formatter.format(chosenDateTime);
+    });
   }
 
   @override
@@ -42,16 +71,37 @@ class _AddExpenseState extends State<AddExpense> {
               keyboardType: TextInputType.text,
               controller: _titleController,
             ),
-            TextField(
-              controller: _amountController,
-              decoration: InputDecoration(
-                label: Text('Amount'),
-              ),
-              keyboardType: TextInputType.numberWithOptions(decimal: false),
+            Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                    controller: _amountController,
+                    decoration: InputDecoration(
+                      label: Text('Amount'),
+                      prefixText: '\$',
+                    ),
+                    keyboardType: TextInputType.numberWithOptions(
+                      decimal: false,
+                    ),
+                  ),
+                ),
+                SizedBox(width: 16),
+                Expanded(
+                  child: Row(
+                    children: [
+                      Text(_selectedDate ?? "Select Date"),
+                      IconButton(
+                        onPressed: showDatePickerOption,
+                        icon: Icon(Icons.calendar_month),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
             Row(
               children: [
-                ElevatedButton(
+                TextButton(
                   onPressed: handleCancel,
                   child: Text('Cancel'),
                 ),

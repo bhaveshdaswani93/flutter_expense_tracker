@@ -14,6 +14,7 @@ class _AddExpenseState extends State<AddExpense> {
   final _titleController = TextEditingController();
   final _amountController = TextEditingController();
   String? _selectedDate;
+  Category _selectedCategory = Category.work;
 
   void handleCancel() {
     Navigator.pop(context);
@@ -72,6 +73,7 @@ class _AddExpenseState extends State<AddExpense> {
               controller: _titleController,
             ),
             Row(
+              crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 Expanded(
                   child: TextField(
@@ -88,6 +90,7 @@ class _AddExpenseState extends State<AddExpense> {
                 SizedBox(width: 16),
                 Expanded(
                   child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       Text(_selectedDate ?? "Select Date"),
                       IconButton(
@@ -101,6 +104,27 @@ class _AddExpenseState extends State<AddExpense> {
             ),
             Row(
               children: [
+                DropdownButton(
+                  items: Category.values.map((category) {
+                    return DropdownMenuItem(
+                      value: category,
+                      child: Text(
+                        category.name.toString().toUpperCase(),
+                      ),
+                    );
+                  }).toList(),
+                  value: _selectedCategory,
+                  onChanged: (value) {
+                    if (value == null) {
+                      return;
+                    }
+
+                    setState(() {
+                      _selectedCategory = value;
+                    });
+                  },
+                ),
+                Spacer(),
                 TextButton(
                   onPressed: handleCancel,
                   child: Text('Cancel'),

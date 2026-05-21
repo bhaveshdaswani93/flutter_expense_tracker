@@ -2,7 +2,9 @@ import 'package:expense_tracker/models/expense.dart';
 import 'package:flutter/material.dart';
 
 class AddExpense extends StatefulWidget {
-  const AddExpense({super.key});
+  final void Function(Expense) onAddExpense;
+
+  const AddExpense({super.key, required this.onAddExpense});
 
   @override
   State<AddExpense> createState() {
@@ -13,7 +15,7 @@ class AddExpense extends StatefulWidget {
 class _AddExpenseState extends State<AddExpense> {
   final _titleController = TextEditingController();
   final _amountController = TextEditingController();
-  String? _selectedDate;
+  DateTime? _selectedDate;
   Category _selectedCategory = Category.work;
 
   void handleCancel() {
@@ -21,8 +23,45 @@ class _AddExpenseState extends State<AddExpense> {
   }
 
   void _handleSave() {
-    print(_titleController.text);
-    print(_amountController.text);
+    final enteredTitle = _titleController.text.trim();
+    final enteredAmount = double.tryParse(_amountController.text);
+
+    final amountIsInvalid = enteredAmount == null || enteredAmount <= 0;
+    final dateIsInvalid = _selectedDate == null;
+    final titleIsInvalid = enteredTitle.isEmpty;
+    final formIsInvalid = amountIsInvalid || dateIsInvalid || titleIsInvalid;
+
+    if (formIsInvalid) {
+      showDialog(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          title: Text("Invalid Input"),
+          content: Text(
+            "Please make sure to enter valid title, amount and date.",
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(ctx);
+              },
+              child: Text("Okay"),
+            ),
+          ],
+        ),
+      );
+      return;
+    }
+
+    widget.onAddExpense(
+      Expense(
+        title: enteredTitle,
+        amount: enteredAmount,
+        date: _selectedDate!,
+        category: _selectedCategory,
+      ),
+    );
+
+    Navigator.pop(context);
   }
 
   @override
@@ -47,7 +86,7 @@ class _AddExpenseState extends State<AddExpense> {
     }
 
     setState(() {
-      _selectedDate = formatter.format(chosenDateTime);
+      _selectedDate = chosenDateTime;
     });
   }
 
@@ -92,7 +131,7 @@ class _AddExpenseState extends State<AddExpense> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      Text(_selectedDate ?? "Select Date"),
+                      Text(_selectedDate != null ? formatter.format(_selectedDate!) : "Select Date"),
                       IconButton(
                         onPressed: showDatePickerOption,
                         icon: Icon(Icons.calendar_month),

@@ -16,9 +16,17 @@ class Expenses extends StatefulWidget {
 class _ExpensesState extends State<Expenses> {
   _openAddExpenseOverlay() {
     showModalBottomSheet(
+      isScrollControlled: true,
       context: context,
-      builder: (BuildContext ctx) => const AddExpense(),
+      useSafeArea: true,
+      builder: (BuildContext ctx) => AddExpense(onAddExpense: addExpense),
     );
+  }
+
+  addExpense(Expense expense) {
+    setState(() {
+      _expensesData.add(expense);
+    });
   }
 
   final List<Expense> _expensesData = [

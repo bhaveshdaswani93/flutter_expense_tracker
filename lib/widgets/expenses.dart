@@ -29,6 +29,31 @@ class _ExpensesState extends State<Expenses> {
     });
   }
 
+  removeExpense(Expense expense) {
+    final index = _expensesData.indexOf(expense);
+
+    setState(() {
+      _expensesData.remove(expense);
+    });
+
+    ScaffoldMessenger.of(context).clearSnackBars();
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text("Expense Deleted"),
+        duration: Duration(seconds: 3),
+        action: SnackBarAction(
+          label: "Undo",
+          onPressed: () {
+            setState(() {
+              _expensesData.insert(index, expense);
+            });
+          },
+        ),
+      ),
+    );
+  }
+
   final List<Expense> _expensesData = [
     Expense(
       title: "Flutter Course",
@@ -66,7 +91,10 @@ class _ExpensesState extends State<Expenses> {
         children: [
           Text("Expense Chart"),
           Expanded(
-            child: ExpensesList(expenses: _expensesData),
+            child: ExpensesList(
+              expenses: _expensesData,
+              onRemoveExpense: removeExpense,
+            ),
           ),
         ],
       ),

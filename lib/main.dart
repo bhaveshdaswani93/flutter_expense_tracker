@@ -32,21 +32,22 @@ ThemeData _buildTheme(ColorScheme colorScheme, ThemeData base) {
 }
 
 void main() {
-  SystemChrome.setPreferredOrientations([
-    DeviceOrientation.portraitUp,
-  ]).then((fn) {
-    runApp(
-      MaterialApp(
-        themeMode: ThemeMode.dark,
-        darkTheme: _buildTheme(kDarkColorScheme, ThemeData.dark()),
-        theme: _buildTheme(kColorScheme, ThemeData()).copyWith(
-          appBarTheme: AppBarTheme(
-            backgroundColor: kColorScheme.onPrimaryContainer,
-            foregroundColor: kColorScheme.primaryContainer,
-          ),
+  // WidgetsFlutterBinding.ensureInitialized();
+  // SystemChrome.setPreferredOrientations([
+  // DeviceOrientation.portraitUp,
+  // ]).then((fn) {
+  runApp(
+    MaterialApp(
+      themeMode: ThemeMode.dark,
+      darkTheme: _buildTheme(kDarkColorScheme, ThemeData.dark()),
+      theme: _buildTheme(kColorScheme, ThemeData()).copyWith(
+        appBarTheme: AppBarTheme(
+          backgroundColor: kColorScheme.onPrimaryContainer,
+          foregroundColor: kColorScheme.primaryContainer,
         ),
-        home: const Expenses(),
       ),
-    );
-  });
+      home: const Expenses(),
+    ),
+  );
+  // });
 }

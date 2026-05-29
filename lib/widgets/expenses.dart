@@ -78,6 +78,11 @@ class _ExpensesState extends State<Expenses> {
 
   @override
   Widget build(BuildContext context) {
+    final width = MediaQuery.sizeOf(context).width;
+    final height = MediaQuery.sizeOf(context).height;
+
+    print("Width: $width, Height: $height");
+
     return Scaffold(
       appBar: AppBar(
         title: const Text("Flutter Expense Tracker"),
@@ -88,17 +93,29 @@ class _ExpensesState extends State<Expenses> {
           ),
         ],
       ),
-      body: Column(
-        children: [
-          Chart(expenses: _expensesData),
-          Expanded(
-            child: ExpensesList(
-              expenses: _expensesData,
-              onRemoveExpense: removeExpense,
+      body: width < 600
+          ? Column(
+              children: [
+                Chart(expenses: _expensesData),
+                Expanded(
+                  child: ExpensesList(
+                    expenses: _expensesData,
+                    onRemoveExpense: removeExpense,
+                  ),
+                ),
+              ],
+            )
+          : Row(
+              children: [
+                Expanded(child: Chart(expenses: _expensesData)),
+                Expanded(
+                  child: ExpensesList(
+                    expenses: _expensesData,
+                    onRemoveExpense: removeExpense,
+                  ),
+                ),
+              ],
             ),
-          ),
-        ],
-      ),
     );
   }
 }

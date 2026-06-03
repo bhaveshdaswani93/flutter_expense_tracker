@@ -20,6 +20,7 @@ class _ExpensesState extends State<Expenses> {
       isScrollControlled: true,
       context: context,
       useSafeArea: true,
+      constraints: const BoxConstraints(minWidth: double.infinity),
       builder: (BuildContext ctx) => AddExpense(onAddExpense: addExpense),
     );
   }

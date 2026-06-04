@@ -94,103 +94,180 @@ class _AddExpenseState extends State<AddExpense> {
   Widget build(BuildContext context) {
     final keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
 
-    return SingleChildScrollView(
-      child: Padding(
-        padding: EdgeInsets.fromLTRB(16, 12, 16, keyboardHeight + 12),
-        child: SizedBox(
-          width: double.infinity,
-          child: Column(
-            children: [
-              Text(
-                "Add Expense",
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16,
+    return LayoutBuilder(builder: (context, constraints) {
+      print("Width: ${constraints.maxWidth}, Height: ${constraints.maxHeight}");
+      print("minWidth: ${constraints.minWidth}, minHeight: ${constraints.minHeight}");
+      final isLandscape = constraints.maxWidth > 500;
+      // final isMobile = constraints.maxWidth < 500;
+      // final isTablet = constraints.maxWidth >= 500 && constraints.maxWidth < 1000;
+      // final isDesktop = constraints.maxWidth >= 1000;
+
+  
+          return SizedBox(
+      height: double.infinity,
+      child: SingleChildScrollView(
+        child: Padding(
+          padding: EdgeInsets.fromLTRB(16, 12, 16, keyboardHeight + 12),
+          child: SizedBox(
+            width: double.infinity,
+            child: Column(
+              children: [
+                Text(
+                  "Add Expense",
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                  ),
                 ),
-              ),
-              SizedBox(height: 16),
-              TextField(
-                decoration: const InputDecoration(label: Text("Title")),
-                keyboardType: TextInputType.text,
-                controller: _titleController,
-              ),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Expanded(
-                    child: TextField(
-                      controller: _amountController,
-                      decoration: InputDecoration(
-                        label: Text('Amount'),
-                        prefixText: '\$',
-                      ),
-                      keyboardType: TextInputType.numberWithOptions(
-                        decimal: false,
+                SizedBox(height: 16),
+                isLandscape ? Row(
+                  children: [
+                    Expanded(
+                      child: TextField(
+                        decoration: const InputDecoration(label: Text("Title")),
+                        keyboardType: TextInputType.text,
+                        controller: _titleController,
                       ),
                     ),
-                  ),
-                  SizedBox(width: 16),
-                  Expanded(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        Flexible(
-                          child: Text(
-                            _selectedDate != null
-                                ? formatter.format(_selectedDate!)
-                                : "Select Date",
-                            overflow: TextOverflow.ellipsis,
+                    SizedBox(width: 16),
+                    Expanded(
+                      child: TextField(
+                        decoration: const InputDecoration(label: Text("Amount")),
+                        keyboardType: TextInputType.number,
+                        controller: _amountController,
+                      ),
+                    ),
+                  ],
+                ) : TextField(
+                  decoration: const InputDecoration(label: Text("Title")),
+                  keyboardType: TextInputType.text,
+                  controller: _titleController,
+                ),
+                
+                isLandscape ? Row (
+                  children: [
+                    Expanded(
+                      child: Row(
+                        // mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Flexible(
+                            child: Text(
+                              _selectedDate != null
+                                  ? formatter.format(_selectedDate!)
+                                  : "Select Date",
+                              overflow: TextOverflow.ellipsis,
+                            ),
                           ),
-                        ),
-                        IconButton(
-                          onPressed: showDatePickerOption,
-                          icon: Icon(Icons.calendar_month),
-                        ),
-                      ],
+                          IconButton(
+                            onPressed: showDatePickerOption,
+                            icon: Icon(Icons.calendar_month),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                ],
-              ),
-              Row(
-                children: [
-                  DropdownButton(
-                    items: Category.values.map((category) {
-                      return DropdownMenuItem(
-                        value: category,
-                        child: Text(
-                          category.name.toString().toUpperCase(),
+                    Spacer(),
+                    DropdownButton(
+                      items: Category.values.map((category) {
+                        return DropdownMenuItem(
+                          value: category,
+                          child: Text(
+                            category.name.toString().toUpperCase(),
+                          ),
+                        );
+                      }).toList(),
+                      value: _selectedCategory,
+                      onChanged: (value) {
+                        if (value == null) {
+                          return;
+                        }
+        
+                        setState(() {
+                          _selectedCategory = value;
+                        });
+                      },
+                    ),
+                  ],
+                ) : Row(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Expanded(
+                      child: TextField(
+                        controller: _amountController,
+                        decoration: InputDecoration(
+                          label: Text('Amount'),
+                          prefixText: '\$',
                         ),
-                      );
-                    }).toList(),
-                    value: _selectedCategory,
-                    onChanged: (value) {
-                      if (value == null) {
-                        return;
-                      }
-      
-                      setState(() {
-                        _selectedCategory = value;
-                      });
-                    },
-                  ),
-                  Spacer(),
-                  TextButton(
-                    onPressed: handleCancel,
-                    child: Text('Cancel'),
-                  ),
-                  SizedBox(
-                    width: 8,
-                  ),
-                  ElevatedButton(
-                    onPressed: _handleSave,
-                    child: Text("Save"),
-                  ),
-                ],
-              ),
-            ],
+                        keyboardType: TextInputType.numberWithOptions(
+                          decimal: false,
+                        ),
+                      ),
+                    ),
+                    SizedBox(width: 16),
+                    Expanded(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Flexible(
+                            child: Text(
+                              _selectedDate != null
+                                  ? formatter.format(_selectedDate!)
+                                  : "Select Date",
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                          IconButton(
+                            onPressed: showDatePickerOption,
+                            icon: Icon(Icons.calendar_month),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ) ,
+                Row(
+                  children: [
+                    DropdownButton(
+                      items: Category.values.map((category) {
+                        return DropdownMenuItem(
+                          value: category,
+                          child: Text(
+                            category.name.toString().toUpperCase(),
+                          ),
+                        );
+                      }).toList(),
+                      value: _selectedCategory,
+                      onChanged: (value) {
+                        if (value == null) {
+                          return;
+                        }
+        
+                        setState(() {
+                          _selectedCategory = value;
+                        });
+                      },
+                    ),
+                    Spacer(),
+                    TextButton(
+                      onPressed: handleCancel,
+                      child: Text('Cancel'),
+                    ),
+                    SizedBox(
+                      width: 8,
+                    ),
+                    ElevatedButton(
+                      onPressed: _handleSave,
+                      child: Text("Save"),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),
     );
+    });
+
+
   }
 }

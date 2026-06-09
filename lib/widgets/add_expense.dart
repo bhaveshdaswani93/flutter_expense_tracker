@@ -146,26 +146,6 @@ class _AddExpenseState extends State<AddExpense> {
                 
                 isLandscape ? Row (
                   children: [
-                    Expanded(
-                      child: Row(
-                        // mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          Flexible(
-                            child: Text(
-                              _selectedDate != null
-                                  ? formatter.format(_selectedDate!)
-                                  : "Select Date",
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                          IconButton(
-                            onPressed: showDatePickerOption,
-                            icon: Icon(Icons.calendar_month),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Spacer(),
                     DropdownButton(
                       items: Category.values.map((category) {
                         return DropdownMenuItem(
@@ -186,6 +166,27 @@ class _AddExpenseState extends State<AddExpense> {
                         });
                       },
                     ),
+                    Spacer(),
+                    Expanded(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Flexible(
+                            child: Text(
+                              _selectedDate != null
+                                  ? formatter.format(_selectedDate!)
+                                  : "Select Date",
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                          IconButton(
+                            onPressed: showDatePickerOption,
+                            icon: Icon(Icons.calendar_month),
+                          ),
+                        ],
+                      ),
+                    ),
+                    
                   ],
                 ) : Row(
                   crossAxisAlignment: CrossAxisAlignment.end,
@@ -224,6 +225,24 @@ class _AddExpenseState extends State<AddExpense> {
                     ),
                   ],
                 ) ,
+                if (isLandscape)
+                 Row(
+                  children: [
+                    Spacer(),
+                    TextButton(
+                      onPressed: handleCancel,
+                      child: Text('Cancel'),
+                    ),
+                    SizedBox(
+                      width: 8,
+                    ),
+                    ElevatedButton(
+                      onPressed: _handleSave,
+                      child: Text("Save"),
+                    ),
+                  ]
+                 )
+                else 
                 Row(
                   children: [
                     DropdownButton(

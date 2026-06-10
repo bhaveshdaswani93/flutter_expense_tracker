@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:expense_tracker/models/expense.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class AddExpense extends StatefulWidget {
@@ -21,6 +24,26 @@ class _AddExpenseState extends State<AddExpense> {
   void handleCancel() {
     Navigator.pop(context);
   }
+  _showInvalidInputDialog() {
+    final dialog = Platform.isIOS ? CupertinoAlertDialog(
+      title: Text("Invalid Input"),
+      content: Text(
+        "Please make sure to enter valid title, amount and date.",
+      ),
+      actions: [
+        TextButton(onPressed: () {Navigator.pop(context);}, child: Text("Okay")),
+      ],
+    ) : AlertDialog(
+      title: Text("Invalid Input"),
+      content: Text(
+        "Please make sure to enter valid title, amount and date.",
+      ),
+      actions: [
+        TextButton(onPressed: () {Navigator.pop(context);}, child: Text("Okay")),
+      ],
+    );
+    Platform.isIOS ? showCupertinoDialog(context: context, builder: (ctx) => dialog) : showDialog(context: context, builder: (ctx) => dialog);
+  }
 
   void _handleSave() {
     final enteredTitle = _titleController.text.trim();
@@ -32,23 +55,24 @@ class _AddExpenseState extends State<AddExpense> {
     final formIsInvalid = amountIsInvalid || dateIsInvalid || titleIsInvalid;
 
     if (formIsInvalid) {
-      showDialog(
-        context: context,
-        builder: (ctx) => AlertDialog(
-          title: Text("Invalid Input"),
-          content: Text(
-            "Please make sure to enter valid title, amount and date.",
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(ctx);
-              },
-              child: Text("Okay"),
-            ),
-          ],
-        ),
-      );
+      // showDialog(
+      //   context: context,
+      //   builder: (ctx) => AlertDialog(
+      //     title: Text("Invalid Input"),
+      //     content: Text(
+      //       "Please make sure to enter valid title, amount and date.",
+      //     ),
+      //     actions: [
+      //       TextButton(
+      //         onPressed: () {
+      //           Navigator.pop(ctx);
+      //         },
+      //         child: Text("Okay"),
+      //       ),
+      //     ],
+      //   ),
+      // );
+      _showInvalidInputDialog();
       return;
     }
 

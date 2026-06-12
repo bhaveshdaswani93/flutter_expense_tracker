@@ -25,9 +25,31 @@ class _ExpensesState extends State<Expenses> {
     );
   }
 
+  _openEditExpenseOverlay(Expense expense) {
+    showModalBottomSheet(
+      isScrollControlled: true,
+      context: context,
+      useSafeArea: true,
+      constraints: const BoxConstraints(minWidth: double.infinity),
+      builder: (BuildContext ctx) => AddExpense(
+        onAddExpense: addExpense,
+        onEditExpense: editExpense,
+        expenseToEdit: expense,
+      ),
+    );
+  }
+
   addExpense(Expense expense) {
     setState(() {
       _expensesData.add(expense);
+    });
+  }
+
+  editExpense(Expense updatedExpense) {
+    final index = _expensesData.indexWhere((e) => e.id == updatedExpense.id);
+    if (index == -1) return;
+    setState(() {
+      _expensesData[index] = updatedExpense;
     });
   }
 
@@ -102,6 +124,7 @@ class _ExpensesState extends State<Expenses> {
                   child: ExpensesList(
                     expenses: _expensesData,
                     onRemoveExpense: removeExpense,
+                    onEditExpense: _openEditExpenseOverlay,
                   ),
                 ),
               ],
@@ -113,6 +136,7 @@ class _ExpensesState extends State<Expenses> {
                   child: ExpensesList(
                     expenses: _expensesData,
                     onRemoveExpense: removeExpense,
+                    onEditExpense: _openEditExpenseOverlay,
                   ),
                 ),
               ],

@@ -34,8 +34,31 @@ class Expense {
     required this.category,
   }) : id = uuid.v4();
 
+  Expense._withId({
+    required this.id,
+    required this.title,
+    required this.amount,
+    required this.date,
+    required this.category,
+  });
+
   String get formattedDate {
     return formatter.format(date);
+  }
+
+  Expense copyWith({
+    String? title,
+    double? amount,
+    DateTime? date,
+    Category? category,
+  }) {
+    return Expense._withId(
+      id: id,
+      title: title ?? this.title,
+      amount: amount ?? this.amount,
+      date: date ?? this.date,
+      category: category ?? this.category,
+    );
   }
 }
 

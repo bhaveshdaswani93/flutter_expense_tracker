@@ -6,8 +6,15 @@ import 'package:flutter/material.dart';
 
 class AddExpense extends StatefulWidget {
   final void Function(Expense) onAddExpense;
+  final void Function(Expense)? onEditExpense;
+  final Expense? expenseToEdit;
 
-  const AddExpense({super.key, required this.onAddExpense});
+  const AddExpense({
+    super.key,
+    required this.onAddExpense,
+    this.onEditExpense,
+    this.expenseToEdit,
+  });
 
   @override
   State<AddExpense> createState() {
@@ -16,10 +23,22 @@ class AddExpense extends StatefulWidget {
 }
 
 class _AddExpenseState extends State<AddExpense> {
-  final _titleController = TextEditingController();
-  final _amountController = TextEditingController();
-  DateTime? _selectedDate;
-  Category _selectedCategory = Category.work;
+  late final TextEditingController _titleController;
+  late final TextEditingController _amountController;
+  late DateTime? _selectedDate;
+  late Category _selectedCategory;
+
+  @override
+  void initState() {
+    super.initState();
+    final e = widget.expenseToEdit;
+    _titleController = TextEditingController(text: e?.title ?? '');
+    _amountController = TextEditingController(
+      text: e != null ? e.amount.toStringAsFixed(2) : '',
+    );
+    _selectedDate = e?.date;
+    _selectedCategory = e?.category ?? Category.work;
+  }
 
   void handleCancel() {
     Navigator.pop(context);
@@ -76,14 +95,25 @@ class _AddExpenseState extends State<AddExpense> {
       return;
     }
 
-    widget.onAddExpense(
-      Expense(
-        title: enteredTitle,
-        amount: enteredAmount,
-        date: _selectedDate!,
-        category: _selectedCategory,
-      ),
-    );
+    if (widget.expenseToEdit != null) {
+      widget.onEditExpense!(
+        widget.expenseToEdit!.copyWith(
+          title: enteredTitle,
+          amount: enteredAmount,
+          date: _selectedDate,
+          category: _selectedCategory,
+        ),
+      );
+    } else {
+      widget.onAddExpense(
+        Expense(
+          title: enteredTitle,
+          amount: enteredAmount,
+          date: _selectedDate!,
+          category: _selectedCategory,
+        ),
+      );
+    }
 
     Navigator.pop(context);
   }
@@ -137,7 +167,7 @@ class _AddExpenseState extends State<AddExpense> {
             child: Column(
               children: [
                 Text(
-                  "Add Expense",
+                  widget.expenseToEdit != null ? "Edit Expense" : "Add Expense",
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 16,

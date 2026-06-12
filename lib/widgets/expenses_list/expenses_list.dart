@@ -5,10 +5,12 @@ import 'package:flutter/material.dart';
 class ExpensesList extends StatelessWidget {
   final List<Expense> expenses;
   final void Function(Expense expense) onRemoveExpense;
+  final void Function(Expense expense) onEditExpense;
   const ExpensesList({
     super.key,
     required this.expenses,
     required this.onRemoveExpense,
+    required this.onEditExpense,
   });
 
   @override
@@ -21,7 +23,7 @@ class ExpensesList extends StatelessWidget {
           color: Theme.of(context).colorScheme.error,
         ),
         key: ValueKey(expenses[index]),
-        child: ExpenseItem(expenses[index]),
+        child: ExpenseItem(expenses[index], onEditExpense: onEditExpense),
         onDismissed: (direction) {
           onRemoveExpense(expenses[index]);
         },

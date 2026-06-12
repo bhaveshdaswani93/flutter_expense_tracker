@@ -3,8 +3,9 @@ import 'package:flutter/material.dart';
 
 class ExpenseItem extends StatelessWidget {
   final Expense expense;
+  final void Function(Expense) onEditExpense;
 
-  const ExpenseItem(this.expense, {super.key});
+  const ExpenseItem(this.expense, {super.key, required this.onEditExpense});
 
   @override
   Widget build(BuildContext context) {
@@ -17,11 +18,23 @@ class ExpenseItem extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              expense.title,
-              style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                fontStyle: FontStyle.italic,
-              ),
+            Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    expense.title,
+                    style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                      fontStyle: FontStyle.italic,
+                    ),
+                  ),
+                ),
+                IconButton(
+                  icon: const Icon(Icons.edit, size: 20),
+                  onPressed: () => onEditExpense(expense),
+                  padding: EdgeInsets.zero,
+                  constraints: const BoxConstraints(),
+                ),
+              ],
             ),
             SizedBox(height: 4),
             Row(
